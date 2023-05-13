@@ -23,6 +23,35 @@ const AuthForm = () => {
 
     setIsLoading(true);   
     if (isLogin) {
+      fetch(
+        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDLlLTi9E1dh1MrRu4M0lTlfXvgPeh6ag4',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            email: enteredEmail,
+            password: enteredPassword,
+            returnSecureToken: true,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      ).then((res) => {
+        setIsLoading(false);
+        if (res.ok) {
+         let response=res.json();
+         response.then((data)=>console.log("idTOken:",data.idToken))
+        } else {
+          return res.json().then((data) => {
+            let errorMessage = 'Authentication failed!';
+            // if (data && data.error && data.error.message) {
+            //   errorMessage = data.error.message;
+            // }
+            alert(errorMessage);
+          });
+        }
+      });
+
     } else {
       fetch(
         'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDLlLTi9E1dh1MrRu4M0lTlfXvgPeh6ag4',
@@ -40,7 +69,7 @@ const AuthForm = () => {
       ).then((res) => {
         setIsLoading(false);
         if (res.ok) {
-          // ...
+          console.log("Sign up successfully")
         } else {
           return res.json().then((data) => {
             let errorMessage = 'Authentication failed!';
@@ -73,7 +102,7 @@ const AuthForm = () => {
         </div>
         <div className={classes.actions}>
           {!isLoading && <button>{isLogin ? 'Login' : 'Create Account'}</button>}
-          {isLoading && <p>Sending request...</p>}
+          {isLoading && <p style={{color:"white"}}>Sending request...</p>}
           <button
             type='button'
             className={classes.toggle}
