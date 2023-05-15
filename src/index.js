@@ -3,10 +3,19 @@ import { BrowserRouter } from 'react-router-dom';
 
 import './index.css';
 import App from './App';
+import { AuthContextProvider } from './Store/Context';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+  <AuthContextProvider>
   <BrowserRouter>
     <App />
   </BrowserRouter>
-);
+  </AuthContextProvider>,
+  )
+
+
+
+
+
+
