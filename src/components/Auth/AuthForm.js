@@ -6,9 +6,8 @@ import classes from "./AuthForm.module.css";
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isCorrect, setIsCorrect] = useState(false);
-const history = useHistory()
-  const authCtx = useContext(AuthContext)
-  
+  const history = useHistory();
+  const authCtx = useContext(AuthContext);
 
   const emailInputRef = useRef("");
   const passwordInputRef = useRef("");
@@ -26,10 +25,10 @@ const history = useHistory()
     let url;
     if (isLogin) {
       url =
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key= AIzaSyDLlLTi9E1dh1MrRu4M0lTlfXvgPeh6ag4";
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDLlLTi9E1dh1MrRu4M0lTlfXvgPeh6ag4";
     } else {
       url =
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key= AIzaSyDLlLTi9E1dh1MrRu4M0lTlfXvgPeh6ag4";
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDLlLTi9E1dh1MrRu4M0lTlfXvgPeh6ag4";
     }
     fetch(url, {
       method: "POST",
@@ -49,23 +48,24 @@ const history = useHistory()
         } else {
           return res.json().then((data) => {
             let errorMessage = "Authentication Failed";
-
             throw new Error(errorMessage);
           });
         }
       })
       .then((data) => {
-        console.log(data.idToken);
-        // authCtx.login(data.idToken)
-        authCtx.login(data.idToken)
-        history.replace('/profile')
-
-
+        authCtx.login(data.idToken);
+        localStorage.setItem("idToken", data.idToken);
+        setTimeout(() => {
+          localStorage.removeItem("idToken");
+          authCtx.logout();
+        }, 5 * 60 * 1000);
+        history.push("/profile");
       })
       .catch((err) => {
         alert(err.message);
       });
   };
+
   return (
     <section className={classes.auth}>
       <h1>{isLogin ? "Login" : "Sign Up"}</h1>
